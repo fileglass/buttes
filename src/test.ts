@@ -8,7 +8,7 @@ let output;
 
 const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-export function niceBytes(x: string){
+function niceBytes(x: string){
 
     let l = 0, n = parseInt(x, 10) || 0;
 
