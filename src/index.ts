@@ -105,7 +105,7 @@ constructor(private readonly opts: Options) {
         return ch()
     }
 
-    public get id() {
+    public get __id() {
     return this._getState("curr")
     }
 }
@@ -115,7 +115,7 @@ function map(ctx: Context, handlers: Ops) {
     const root = ctx.getRoot<Buttes>()
     root.on("chunkStart", (id, done) => toThenable(handlers.chunkStart, id).then(done))
     root.on("chunkEnd", (id, done) => toThenable(handlers.chunkEnd, id).then(done))
-    root.on("data", (chunk) => handlers.onData(chunk, root.id))
+    root.on("data", (chunk) => handlers.onData(chunk, root.__id))
     return true
 }
 
