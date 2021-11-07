@@ -4,3 +4,4 @@ esbuild.config.js
 tsconfig.json
 README.md
 out
+test.txt
