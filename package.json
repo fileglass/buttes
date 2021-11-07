@@ -1,6 +1,6 @@
 {
   "name": "@fileglass/buttes",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Node.js stream chunking library",
   "main": "dist/index.js",
   "repository": "https://github.com/wowjeeez/f-chain",
