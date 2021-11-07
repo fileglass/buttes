@@ -1,0 +1,8 @@
+node_modules
+#used for testing
+node_modules.zip
+dist
+test.txt
+#used for testing
+out
+src/*.d.ts

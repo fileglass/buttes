@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "rootDir": "./src",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "outDir": "dist"
+  }
+}
