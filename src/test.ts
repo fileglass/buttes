@@ -31,8 +31,8 @@ async function main() {
             console.log("chunk ended", id)
             output.end();
         },
-        onData: (chunk, id) => {
-            console.log("Chunk received with id and size", id, niceBytes(chunk.byteLength.toString()))
+        onData: (chunk, id, isLast) => {
+            console.log("Chunk received with id and size", id, niceBytes(chunk.byteLength.toString()), "isLast", isLast)
             output.write(chunk);
         }
     })

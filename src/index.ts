@@ -14,7 +14,7 @@ interface State {
 export interface Ops {
     chunkStart: (id: number) => Promise<void>
     chunkEnd: (id: number) => Promise<void>
-    onData: (chunk: Buffer, id: number) => any
+    onData: (chunk: Buffer, id: number, isLast: boolean) => any
 }
 
 function toThenable(f: Function, ...args: unknown[]) {
@@ -27,12 +27,12 @@ function toThenable(f: Function, ...args: unknown[]) {
 export class Buttes extends Transform {
     private readonly state = new Map<keyof State, any>();
     private readonly handlers = new Map<string, (...args: any[]) => void>();
+    private expectedChunkCount: number = 0;
 
-constructor(private readonly opts: Options) {
+constructor(public readonly opts: Options) {
     super()
     this._setState("bytesPassed", 0)
     this._setState("curr", -1)
-
 }
 
     private _getState<T extends keyof State>(key: T): State[T] {
@@ -115,7 +115,10 @@ function map(ctx: Context, handlers: Ops) {
     const root = ctx.getRoot<Buttes>()
     root.on("chunkStart", (id, done) => toThenable(handlers.chunkStart, id).then(done))
     root.on("chunkEnd", (id, done) => toThenable(handlers.chunkEnd, id).then(done))
-    root.on("data", (chunk) => handlers.onData(chunk, root.__id))
+    root.on("data", (chunk: Buffer) => {
+        const isLast = chunk.byteLength < root.opts.chunkSize
+        handlers.onData(chunk, root.__id, isLast)
+    })
     return true
 }
 
