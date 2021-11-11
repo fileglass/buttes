@@ -6,3 +6,5 @@ test.txt
 #used for testing
 out
 src/*.d.ts
+src/*.js
+family.png

@@ -1,5 +1,6 @@
 import {Buttes} from "./index";
 import {createWriteStream, createReadStream} from "fs"
+import {Transform} from "stream";
 
 const pipe = new Buttes({chunkSize: 1024})
 
@@ -20,7 +21,10 @@ function niceBytes(x: string){
 }
 
 async function main() {
-    const input = createReadStream(`${process.cwd()}/test.txt`)
+    const input = createReadStream(`${process.cwd()}/family.png`)
+    const f = new Transform();
+    let done;
+    const isDone = new Promise(res => (done = res));
 
     pipe.consume(input).map({
         chunkStart: async (id) => {
@@ -32,10 +36,14 @@ async function main() {
             output.end();
         },
         onData: (chunk, id, isLast) => {
-            console.log("Chunk received with id and size", id, niceBytes(chunk.byteLength.toString()), "isLast", isLast)
-            output.write(chunk);
+            f.push(chunk)
+            if (isLast) {
+                done()
+            }
         }
     })
+    await isDone
+    f.pipe(createWriteStream("./out/out.png"))
 }
 main()
 

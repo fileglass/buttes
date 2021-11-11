@@ -1,6 +1,7 @@
 import {Readable, Transform} from "stream";
 import {Context, createChainedFunction} from "@reincarnatedjesus/f-chain"
 
+
 interface Options {
     chunkSize: number,
 }
@@ -61,16 +62,20 @@ constructor(public readonly opts: Options) {
     }
 
     private _push(buff: Buffer) {
-        this.push(buff)
-        this._setState("bytesPassed", this._getState("bytesPassed") + buff.length)
+            this.push(buff)
+            this._setState("bytesPassed", this._getState("bytesPassed") + buff.length)
     }
     private async _startPush(buff: Buffer) {
-    if (this._getState("lastEmittedChunk") !== this._getState("curr")) {
-        await this._startChunk()
-        this._setState("lastEmittedChunk", this._getState("curr"))
-        this._push(buff)
-    } else {
-        this._push(buff)
+    try {
+        if (this._getState("lastEmittedChunk") !== this._getState("curr")) {
+            await this._startChunk()
+            this._setState("lastEmittedChunk", this._getState("curr"))
+            this._push(buff)
+        } else {
+            this._push(buff)
+        }
+    } catch (err) {
+        throw new Error(`Error occurred in chunk ${this._getState("curr")}: ${err}`)
     }
     }
 
